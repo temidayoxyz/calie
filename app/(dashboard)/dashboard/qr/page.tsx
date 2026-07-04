@@ -1,3 +1,4 @@
+import { headers } from "next/headers";
 import { getCurrentUser, getUserBookingPage } from "@/lib/queries/user";
 import { siteConfig } from "@/lib/constants";
 import { generateQrSvg } from "@/lib/qr";
@@ -7,8 +8,12 @@ import { BusinessCard } from "@/components/qr/business-card";
 export default async function QrCenterPage() {
   const user = await getCurrentUser();
   const bookingPage = user?.id ? await getUserBookingPage(user.id) : null;
+  const requestHeaders = await headers();
+  const host = requestHeaders.get("host");
+  const protocol = requestHeaders.get("x-forwarded-proto") ?? "http";
+  const appOrigin = host ? `${protocol}://${host}` : siteConfig.url;
   const bookingUrl = bookingPage
-    ? `${siteConfig.url}/book/${bookingPage.slug}`
+    ? `${appOrigin}/book/${bookingPage.slug}`
     : null;
 
   const qrSvg = bookingUrl

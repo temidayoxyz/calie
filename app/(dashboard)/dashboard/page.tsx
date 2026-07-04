@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { headers } from "next/headers";
 import { Calendar, Download, Link2, QrCode } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,13 +7,16 @@ import { CopyLinkButton } from "@/components/dashboard/copy-link-button";
 import { getCurrentUser, getUserBookingPage } from "@/lib/queries/user";
 import { getUpcomingMeetings } from "@/lib/queries/meetings";
 import { generateQrSvg } from "@/lib/qr";
-import { siteConfig } from "@/lib/constants";
 
 export default async function DashboardPage() {
   const user = await getCurrentUser();
   const bookingPage = user?.id ? await getUserBookingPage(user.id) : null;
+  const requestHeaders = await headers();
+  const host = requestHeaders.get("host");
+  const protocol = requestHeaders.get("x-forwarded-proto") ?? "http";
+  const appOrigin = host ? `${protocol}://${host}` : "http://localhost:3000";
   const bookingUrl = bookingPage
-    ? `${siteConfig.url}/book/${bookingPage.slug}`
+    ? `${appOrigin}/book/${bookingPage.slug}`
     : null;
 
   const allUpcoming = user?.id ? await getUpcomingMeetings(user.id) : [];

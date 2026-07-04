@@ -2,7 +2,7 @@
 
 import { useState, useRef, useCallback } from "react";
 import { Download, User, Briefcase, Building2, Mail, Phone } from "lucide-react";
-import { toPng, toJpeg, toSvg } from "html-to-image";
+import QRCode from "qrcode";
 import { Button } from "@/components/ui/button";
 
 interface BusinessCardProps {
@@ -19,6 +19,134 @@ const INITIAL_FORM = {
   company: "",
 };
 
+const CARD_WIDTH = 840;
+const CARD_HEIGHT = 480;
+
+function escapeXml(value: string) {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
+}
+
+function svgToDataUrl(svg: string) {
+  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+}
+
+async function makeBusinessCardSvg({
+  form,
+  brandColor,
+  bookingUrl,
+}: {
+  form: typeof INITIAL_FORM;
+  brandColor: string;
+  bookingUrl: string;
+}) {
+  const safeName = escapeXml(form.name || "Your Name");
+  const safeJob = escapeXml(form.job || "Job Title");
+  const safeCompany = form.company ? ` at ${escapeXml(form.company)}` : "";
+  const safeEmail = escapeXml(form.email);
+  const safePhone = escapeXml(form.phone);
+  const generatedQrSvg = await QRCode.toString(bookingUrl, {
+    type: "svg",
+    color: { dark: brandColor, light: "#FFFFFF" },
+    margin: 1,
+  });
+  const qrMarkup = generatedQrSvg.replace(/<svg\b([^>]*)>/, (_match, attrs: string) => {
+    const cleanAttrs = attrs.replace(/\s(width|height)="[^"]*"/g, "");
+    return `<svg x="612" y="156" width="132" height="132"${cleanAttrs}>`;
+  });
+
+  return `
+<svg xmlns="http://www.w3.org/2000/svg" width="${CARD_WIDTH}" height="${CARD_HEIGHT}" viewBox="0 0 ${CARD_WIDTH} ${CARD_HEIGHT}">
+  <rect width="${CARD_WIDTH}" height="${CARD_HEIGHT}" rx="24" fill="#ffffff"/>
+  <rect x="0" y="0" width="12" height="${CARD_HEIGHT}" rx="6" fill="${escapeXml(brandColor)}"/>
+  <text x="64" y="162" fill="#111111" font-family="Arial, sans-serif" font-size="44" font-weight="700">${safeName}</text>
+  <text x="64" y="220" fill="#666666" font-family="Arial, sans-serif" font-size="28">${safeJob}${safeCompany}</text>
+  ${safeEmail ? `<text x="64" y="294" fill="#666666" font-family="Arial, sans-serif" font-size="24">${safeEmail}</text>` : ""}
+  ${safePhone ? `<text x="64" y="338" fill="#666666" font-family="Arial, sans-serif" font-size="24">${safePhone}</text>` : ""}
+  <rect x="588" y="132" width="180" height="180" rx="20" fill="#ffffff" stroke="#e8e8e5" stroke-width="2"/>
+  ${qrMarkup}
+  <text x="716" y="424" fill="#999999" font-family="Arial, sans-serif" font-size="18">Calie</text>
+</svg>`.trim();
+}
+
+async function loadImage(src: string) {
+  const image = new Image();
+  image.decoding = "async";
+  image.src = src;
+
+  await new Promise<void>((resolve, reject) => {
+    image.onload = () => resolve();
+    image.onerror = () => reject(new Error("Could not render QR code"));
+  });
+
+  return image;
+}
+
+async function makeBusinessCardRasterDataUrl(
+  {
+    form,
+    brandColor,
+    bookingUrl,
+  }: {
+    form: typeof INITIAL_FORM;
+    brandColor: string;
+    bookingUrl: string;
+  },
+  mimeType: "image/png" | "image/jpeg"
+) {
+  const qrDataUrl = await QRCode.toDataURL(bookingUrl, {
+    color: { dark: brandColor, light: "#FFFFFF" },
+    width: 264,
+    margin: 1,
+  });
+  const qrImage = await loadImage(qrDataUrl);
+
+  const canvas = document.createElement("canvas");
+  canvas.width = CARD_WIDTH;
+  canvas.height = CARD_HEIGHT;
+  const context = canvas.getContext("2d");
+  if (!context) throw new Error("Could not create export canvas");
+
+  context.fillStyle = "#ffffff";
+  context.fillRect(0, 0, CARD_WIDTH, CARD_HEIGHT);
+  context.fillStyle = brandColor;
+  context.fillRect(0, 0, 12, CARD_HEIGHT);
+
+  context.fillStyle = "#111111";
+  context.font = "700 44px Arial, sans-serif";
+  context.fillText(form.name || "Your Name", 64, 162);
+
+  context.fillStyle = "#666666";
+  context.font = "28px Arial, sans-serif";
+  context.fillText(`${form.job || "Job Title"}${form.company ? ` at ${form.company}` : ""}`, 64, 220);
+
+  context.font = "24px Arial, sans-serif";
+  if (form.email) context.fillText(form.email, 64, 294);
+  if (form.phone) context.fillText(form.phone, 64, 338);
+
+  context.strokeStyle = "#e8e8e5";
+  context.lineWidth = 2;
+  context.strokeRect(588, 132, 180, 180);
+  context.drawImage(qrImage, 612, 156, 132, 132);
+
+  context.fillStyle = "#999999";
+  context.font = "18px Arial, sans-serif";
+  context.fillText("Calie", 716, 424);
+
+  return canvas.toDataURL(mimeType, mimeType === "image/jpeg" ? 0.95 : 1);
+}
+
+function triggerDownload(dataUrl: string, filename: string) {
+  const link = document.createElement("a");
+  link.href = dataUrl;
+  link.download = filename;
+  link.click();
+}
+
 export function BusinessCard({ bookingUrl, brandColor, qrSvg }: BusinessCardProps) {
   const [form, setForm] = useState(INITIAL_FORM);
   const [downloading, setDownloading] = useState<string | null>(null);
@@ -31,30 +159,27 @@ export function BusinessCard({ bookingUrl, brandColor, qrSvg }: BusinessCardProp
 
   const download = useCallback(
     async (format: "png" | "jpg" | "svg") => {
-      if (!cardRef.current) return;
+      if (!cardRef.current || !bookingUrl || !qrSvg) return;
       setDownloading(format);
 
       try {
         const filename = `calie-card-${form.name.toLowerCase().replace(/\s+/g, "-") || "contact"}`;
 
         if (format === "svg") {
-          const dataUrl = await toSvg(cardRef.current, { quality: 1, pixelRatio: 2 });
-          const link = document.createElement("a");
-          link.href = dataUrl;
-          link.download = `${filename}.svg`;
-          link.click();
+          const cardSvg = await makeBusinessCardSvg({ form, brandColor, bookingUrl });
+          triggerDownload(svgToDataUrl(cardSvg), `${filename}.svg`);
         } else if (format === "png") {
-          const dataUrl = await toPng(cardRef.current, { quality: 1, pixelRatio: 2 });
-          const link = document.createElement("a");
-          link.href = dataUrl;
-          link.download = `${filename}.png`;
-          link.click();
+          const dataUrl = await makeBusinessCardRasterDataUrl(
+            { form, brandColor, bookingUrl },
+            "image/png"
+          );
+          triggerDownload(dataUrl, `${filename}.png`);
         } else {
-          const dataUrl = await toJpeg(cardRef.current, { quality: 0.95, pixelRatio: 2 });
-          const link = document.createElement("a");
-          link.href = dataUrl;
-          link.download = `${filename}.jpg`;
-          link.click();
+          const dataUrl = await makeBusinessCardRasterDataUrl(
+            { form, brandColor, bookingUrl },
+            "image/jpeg"
+          );
+          triggerDownload(dataUrl, `${filename}.jpg`);
         }
       } catch {
         // Silently fail download errors
@@ -62,7 +187,7 @@ export function BusinessCard({ bookingUrl, brandColor, qrSvg }: BusinessCardProp
         setDownloading(null);
       }
     },
-    [form.name]
+    [bookingUrl, brandColor, form, qrSvg]
   );
 
   if (!bookingUrl || !qrSvg) {
