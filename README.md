@@ -6,7 +6,8 @@ A QR-first scheduling platform built with Next.js 15, Tailwind CSS, and Turso. C
 
 ## Features
 
-- **QR-first scheduling** — Every booking page gets a downloadable QR code (PNG + SVG)
+- **QR-first scheduling** — Every booking page gets a downloadable QR code (PNG, SVG, JPG)
+- **Business card generator** — Create and download branded business cards with your QR code, name, title, company, email, and phone
 - **Branded booking pages** — Custom headline, bio, brand color, and URL slug
 - **Weekly availability** — Set available days and times, generate slots at your chosen duration
 - **Booking management** — Upcoming, ongoing, and past meetings with invitee details
@@ -65,7 +66,7 @@ Open [http://localhost:3000](http://localhost:3000), sign up at `/signup`, and y
 2. **Set availability** at `/dashboard/availability` — choose days and time ranges
 3. **Customize your page** at `/dashboard/booking-pages` — headline, bio, brand color, slug, meeting duration
 4. **Share your link** — `calie.app/book/your-slug`
-5. **Download QR** at `/dashboard/qr` — PNG or SVG, branded with your color
+5. **Download QR & business card** at `/dashboard/qr` — QR as PNG/SVG/JPG, plus a branded business card with your details
 6. **View meetings** at `/dashboard/meetings` — upcoming, ongoing, and past
 
 ## Stack
@@ -123,12 +124,14 @@ types/               Shared TypeScript types
 | Token | Value | Usage |
 |-------|-------|-------|
 | Background | `#FAFAF8` | Page backgrounds |
-| Foreground | `#111111` | Text, icons |
+| Foreground | `#235347` | Headings, brand text |
+| Neutral | `#111111` | Body text, icons |
 | Surface | `#FFFFFF` | Cards, sidebar |
 | Border | `#E8E8E5` | Dividers, card borders |
 | Muted | `#666666` | Secondary text |
 | Accent | `#235347` | CTAs, brand color default |
 | Success | `#2E7D32` | Positive feedback |
+| Danger | `#C0392B` | Error states, destructive actions |
 | Headings | Geist | All headings |
 | Body | Inter | Body text, UI |
 
