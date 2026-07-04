@@ -6,12 +6,9 @@ import { cn } from "@/lib/utils";
 
 const industries = [
   "Freelancers",
-  "Recruiters",
-  "Sales",
-  "Healthcare",
   "Education",
   "Consultants",
-  "Photographers",
+  "Creators",
   "Lawyers",
   "Agencies",
 ];
