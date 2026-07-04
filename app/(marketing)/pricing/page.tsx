@@ -70,7 +70,7 @@ export default function PricingPage() {
 
               <ul className="mt-8 flex-1 space-y-3">
                 {plan.features.map((feature) => (
-                  <li key={feature} className="text-sm text-foreground/80">
+                  <li key={feature} className="text-sm text-neutral/80">
                     {feature}
                   </li>
                 ))}

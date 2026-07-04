@@ -18,7 +18,7 @@ const navItems = [
   { href: "/dashboard/availability", label: "Availability", icon: Clock },
   { href: "/dashboard/booking-pages", label: "Booking Pages", icon: FileText },
   { href: "/dashboard/meetings", label: "Meetings", icon: Calendar },
-  { href: "/dashboard/qr", label: "QR Code", icon: QrCode },
+  { href: "/dashboard/qr", label: "QR Center", icon: QrCode },
   { href: "/dashboard/integrations", label: "Integrations", icon: Plug },
   { href: "/dashboard/settings", label: "Settings", icon: Settings },
   { href: "/dashboard/billing", label: "Billing", icon: CreditCard },

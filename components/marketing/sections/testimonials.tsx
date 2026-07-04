@@ -33,7 +33,7 @@ export function TestimonialsSection() {
         {testimonials.map((t, i) => (
           <FadeIn key={t.name} delay={i * 0.1}>
             <blockquote className="flex h-full flex-col rounded-xl border border-border bg-background p-6 lg:p-8">
-              <p className="flex-1 text-base leading-relaxed text-foreground/90">
+              <p className="flex-1 text-base leading-relaxed text-neutral/90">
                 &ldquo;{t.quote}&rdquo;
               </p>
               <footer className="mt-6 border-t border-border pt-6">

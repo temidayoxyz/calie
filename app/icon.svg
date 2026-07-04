@@ -4,17 +4,17 @@
 
   <!-- 3x3 grid -->
   <!-- Row 1 -->
-  <rect x="10" y="10" width="7" height="7" rx="1.5" fill="#111111"/>
-  <rect x="20.5" y="10" width="7" height="7" rx="1.5" fill="#111111" opacity="0.2"/>
-  <rect x="31" y="10" width="7" height="7" rx="1.5" fill="#111111"/>
+  <rect x="10" y="10" width="7" height="7" rx="1.5" fill="#235347"/>
+  <rect x="20.5" y="10" width="7" height="7" rx="1.5" fill="#235347" opacity="0.2"/>
+  <rect x="31" y="10" width="7" height="7" rx="1.5" fill="#235347"/>
 
   <!-- Row 2 -->
-  <rect x="10" y="20.5" width="7" height="7" rx="1.5" fill="#111111" opacity="0.2"/>
+  <rect x="10" y="20.5" width="7" height="7" rx="1.5" fill="#235347" opacity="0.2"/>
   <circle cx="24" cy="24" r="3.5" fill="#235347"/>
-  <rect x="31" y="20.5" width="7" height="7" rx="1.5" fill="#111111" opacity="0.2"/>
+  <rect x="31" y="20.5" width="7" height="7" rx="1.5" fill="#235347" opacity="0.2"/>
 
   <!-- Row 3 -->
-  <rect x="10" y="31" width="7" height="7" rx="1.5" fill="#111111"/>
-  <rect x="20.5" y="31" width="7" height="7" rx="1.5" fill="#111111" opacity="0.2"/>
-  <rect x="31" y="31" width="7" height="7" rx="1.5" fill="#111111"/>
+  <rect x="10" y="31" width="7" height="7" rx="1.5" fill="#235347"/>
+  <rect x="20.5" y="31" width="7" height="7" rx="1.5" fill="#235347" opacity="0.2"/>
+  <rect x="31" y="31" width="7" height="7" rx="1.5" fill="#235347"/>
 </svg>

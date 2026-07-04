@@ -39,7 +39,7 @@ export function Logo({ className, size = "md" }: LogoProps) {
           <div className="rounded-[1px] bg-foreground" />
         </div>
       </div>
-      <span className={cn("font-heading font-semibold tracking-tight", textSizes[size])}>
+      <span className={cn("font-heading font-semibold tracking-tight text-foreground", textSizes[size])}>
         Calie
       </span>
     </div>

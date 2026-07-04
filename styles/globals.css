@@ -5,7 +5,8 @@
 @layer base {
   :root {
     --color-background: #fafaf8;
-    --color-foreground: #111111;
+    --color-foreground: #235347;
+    --color-neutral: #111111;
     --color-surface: #ffffff;
     --color-border: #e8e8e5;
     --color-muted: #666666;
@@ -28,7 +29,7 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased;
+    @apply bg-background text-neutral font-sans antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
     line-height: 1.7;
   }
@@ -39,7 +40,7 @@
   h4,
   h5,
   h6 {
-    @apply font-heading tracking-tight;
+    @apply font-heading tracking-tight text-foreground;
     line-height: 1.2;
   }
 

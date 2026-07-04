@@ -106,7 +106,7 @@ export function BookingFlow({
                     ? "cursor-not-allowed border-border/50 text-muted/40"
                     : isSelected
                       ? ""
-                      : "border-border bg-background text-foreground hover:border-foreground/20 hover:shadow-card"
+                      : "border-border bg-background text-neutral hover:border-foreground/20 hover:shadow-card"
                 }`}
               >
                 {formatDate(date)}
@@ -151,7 +151,7 @@ export function BookingFlow({
                     className={`rounded-lg border px-3 py-2 text-sm font-medium transition-all duration-fast ${
                       isSelected
                         ? ""
-                        : "border-border bg-background text-foreground hover:border-foreground/20 hover:shadow-card"
+                        : "border-border bg-background text-neutral hover:border-foreground/20 hover:shadow-card"
                     }`}
                   >
                     {formatTime(slot.start)}

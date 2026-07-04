@@ -11,7 +11,8 @@ const config: Config = {
     extend: {
       colors: {
         background: "#FAFAF8",
-        foreground: "#111111",
+        foreground: "#235347",
+        neutral: "#111111",
         surface: "#FFFFFF",
         border: "#E8E8E5",
         muted: "#666666",

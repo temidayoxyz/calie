@@ -33,7 +33,7 @@ export default async function DashboardPage() {
   const qrSvg = bookingUrl
     ? await generateQrSvg({
         url: bookingUrl,
-        color: bookingPage?.brandColor ?? "#111111",
+        color: bookingPage?.brandColor ?? "#235347",
         backgroundColor: "#FFFFFF",
         margin: 1,
         width: 200,

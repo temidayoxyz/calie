@@ -2,6 +2,7 @@ import { getCurrentUser, getUserBookingPage } from "@/lib/queries/user";
 import { siteConfig } from "@/lib/constants";
 import { generateQrSvg } from "@/lib/qr";
 import { QrDownloadButtons } from "@/components/qr/download-buttons";
+import { BusinessCard } from "@/components/qr/business-card";
 
 export default async function QrCenterPage() {
   const user = await getCurrentUser();
@@ -24,14 +25,22 @@ export default async function QrCenterPage() {
       </div>
 
       {bookingUrl && qrSvg ? (
-        <div className="flex flex-col items-center rounded-xl border border-border bg-surface p-8">
-          <div
-            className="rounded-xl border border-border bg-white p-6"
-            dangerouslySetInnerHTML={{ __html: qrSvg }}
+        <>
+          <div className="flex flex-col items-center rounded-xl border border-border bg-surface p-8">
+            <div
+              className="rounded-xl border border-border bg-white p-6"
+              dangerouslySetInnerHTML={{ __html: qrSvg }}
+            />
+            <p className="mt-4 font-mono text-sm text-muted">{bookingUrl}</p>
+            <QrDownloadButtons url={bookingUrl} color={bookingPage?.brandColor} />
+          </div>
+
+          <BusinessCard
+            bookingUrl={bookingUrl}
+            brandColor={bookingPage?.brandColor ?? "#235347"}
+            qrSvg={qrSvg}
           />
-          <p className="mt-4 font-mono text-sm text-muted">{bookingUrl}</p>
-          <QrDownloadButtons url={bookingUrl} color={bookingPage?.brandColor} />
-        </div>
+        </>
       ) : (
         <p className="text-sm text-muted">Create a booking page to generate your QR code.</p>
       )}
