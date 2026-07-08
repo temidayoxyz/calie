@@ -4,7 +4,8 @@ import { eq, and } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
-import { meetings, bookingPages } from "@/lib/db/schema";
+import { meetings, bookingPages, users } from "@/lib/db/schema";
+import { sendBookingConfirmation, sendNewBookingNotification } from "@/lib/email";
 
 export async function createMeeting(formData: FormData) {
   const bookingPageId = formData.get("bookingPageId") as string;
@@ -37,6 +38,19 @@ export async function createMeeting(formData: FormData) {
     return { error: "This slot has already been booked. Please choose another." };
   }
 
+  // Query the booking page owner for email notifications
+  const [page] = await db
+    .select({
+      headline: bookingPages.headline,
+      duration: bookingPages.duration,
+      hostName: users.name,
+      hostEmail: users.email,
+    })
+    .from(bookingPages)
+    .innerJoin(users, eq(bookingPages.userId, users.id))
+    .where(eq(bookingPages.id, bookingPageId))
+    .limit(1);
+
   const meetingId = crypto.randomUUID();
   await db.insert(meetings).values({
     id: meetingId,
@@ -48,6 +62,26 @@ export async function createMeeting(formData: FormData) {
     endTime,
     status: "confirmed",
   });
+
+  // Send emails before redirect — don't throw on failures
+  if (page) {
+    const emailParams = {
+      inviteeName,
+      inviteeEmail,
+      hostName: page.hostName ?? page.headline,
+      hostEmail: page.hostEmail,
+      date,
+      startTime,
+      endTime,
+      duration: page.duration,
+      slug,
+    };
+
+    await Promise.allSettled([
+      sendBookingConfirmation(emailParams),
+      sendNewBookingNotification(emailParams),
+    ]);
+  }
 
   revalidatePath(`/book/${slug}`);
   redirect(`/book/${slug}/confirmed?name=${encodeURIComponent(inviteeName)}&date=${date}&time=${startTime}&endTime=${endTime}`);

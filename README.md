@@ -137,4 +137,6 @@ types/               Shared TypeScript types
 
 ## License
 
-Private — All rights reserved.
+**Source available, not open source.** All rights reserved.
+
+This repository is public for portfolio review and code assessment purposes. You may view and learn from the code, but you may not use, copy, modify, distribute, or deploy it in any form. See [LICENSE](./LICENSE) for full terms.
