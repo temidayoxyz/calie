@@ -9,6 +9,12 @@ const integrations = [
     status: "active" as const,
   },
   {
+    name: "Email Notifications",
+    description: "Booking confirmation sent to your invitee and a new-booking notification sent to you. Powered by Resend.",
+    icon: Mail,
+    status: "active" as const,
+  },
+  {
     name: "Google Calendar",
     description: "Automatically sync booked meetings to your Google Calendar.",
     icon: Calendar,
@@ -24,12 +30,6 @@ const integrations = [
     name: "Video Conferencing",
     description: "Auto-generate Google Meet or Zoom links for every booking.",
     icon: Video,
-    status: "coming-soon" as const,
-  },
-  {
-    name: "Email Notifications",
-    description: "Send confirmation and reminder emails to you and your invitees.",
-    icon: Mail,
     status: "coming-soon" as const,
   },
 ];
