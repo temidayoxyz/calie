@@ -1,11 +1,11 @@
 import Link from "next/link";
+import { Github } from "lucide-react";
 import { Logo } from "@/components/marketing/logo";
 
 const footerLinks = {
   Product: [
     { href: "/features", label: "Features" },
     { href: "/pricing", label: "Pricing" },
-    { href: "/changelog", label: "Changelog" },
     { href: "/status", label: "Status" },
   ],
   Company: [
@@ -16,7 +16,6 @@ const footerLinks = {
   Legal: [
     { href: "/privacy", label: "Privacy" },
     { href: "/terms", label: "Terms" },
-    { href: "/security", label: "Security" },
   ],
 };
 
@@ -51,10 +50,19 @@ export function MarketingFooter() {
           ))}
         </div>
 
-        <div className="mt-16 border-t border-border pt-8">
-          <p className="text-center text-sm text-muted sm:text-left">
+        <div className="mt-16 border-t border-border pt-8 flex items-center justify-between">
+          <p className="text-sm text-muted">
             &copy; {new Date().getFullYear()} Calie. All rights reserved.
           </p>
+          <a
+            href="https://github.com/temidayoxyz/calie"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-muted transition-colors duration-fast hover:text-neutral"
+            aria-label="View source on GitHub"
+          >
+            <Github className="h-5 w-5" />
+          </a>
         </div>
       </div>
     </footer>
